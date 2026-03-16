@@ -20,7 +20,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-serde_xml = { path = "serde_xml" }
+serde_xpath = { path = "serde_xpath" }
 ```
 
 ## Usage
@@ -28,7 +28,7 @@ serde_xml = { path = "serde_xml" }
 ### Basic Example
 
 ```rust
-use serde_xml::Deserialize;
+use serde_xpath::Deserialize;
 
 #[derive(Deserialize, Debug)]
 #[xpath("/catalog/book")]
@@ -36,10 +36,10 @@ struct Book {
     #[xpath("/@id")]
     id: String,
 
-    #[xpath("/title", serde_xml::Text)]
+    #[xpath("/title", serde_xpath::Text)]
     title: String,
 
-    #[xpath("/author/first", serde_xml::Text)]
+    #[xpath("/author/first", serde_xpath::Text)]
     author: String,
 }
 
@@ -56,7 +56,7 @@ fn main() {
         </catalog>
     "#;
 
-    let book: Book = serde_xml::from_str(xml).unwrap();
+    let book: Book = serde_xpath::from_str(xml).unwrap();
     println!("{:?}", book);
 }
 ```
@@ -66,7 +66,7 @@ fn main() {
 Use `#[xpath("/path")]` on a struct to specify the root element for deserialization. All field XPaths are relative to this root.
 
 ```rust
-#[derive(serde_xml::Deserialize)]
+#[derive(serde_xpath::Deserialize)]
 #[xpath("/root/item")]  // All fields are relative to <item>
 struct Item {
     #[xpath("/@id")]
@@ -81,7 +81,7 @@ struct Item {
 Use `/@attribute_name` to extract XML attribute values:
 
 ```rust
-#[derive(serde_xml::Deserialize)]
+#[derive(serde_xpath::Deserialize)]
 #[xpath("/person")]
 struct Person {
     #[xpath("/@id")]       // Gets <person id="...">
@@ -94,30 +94,30 @@ struct Person {
 
 #### Extracting Text Content
 
-Use `serde_xml::Text` as the second argument to extract the text content of an element:
+Use `serde_xpath::Text` as the second argument to extract the text content of an element:
 
 ```rust
-#[derive(serde_xml::Deserialize)]
+#[derive(serde_xpath::Deserialize)]
 #[xpath("/book")]
 struct Book {
-    #[xpath("/title", serde_xml::Text)]  // Gets text inside <title>...</title>
+    #[xpath("/title", serde_xpath::Text)]  // Gets text inside <title>...</title>
     title: String,
 }
 ```
 
 #### Nested Structs
 
-Fields can be other structs that also derive `serde_xml::Deserialize`:
+Fields can be other structs that also derive `serde_xpath::Deserialize`:
 
 ```rust
-#[derive(serde_xml::Deserialize)]
+#[derive(serde_xpath::Deserialize)]
 #[xpath("/order")]
 struct Order {
     #[xpath("/customer")]
     customer: Customer,
 }
 
-#[derive(serde_xml::Deserialize)]
+#[derive(serde_xpath::Deserialize)]
 struct Customer {
     #[xpath("/@id")]
     id: String,
@@ -132,11 +132,11 @@ struct Customer {
 Use `Option<T>` with `#[serde(default)]` for fields that may not exist:
 
 ```rust
-#[derive(serde_xml::Deserialize)]
+#[derive(serde_xpath::Deserialize)]
 #[xpath("/item")]
 struct Item {
     #[serde(default)]
-    #[xpath("/optional_field", serde_xml::Text)]
+    #[xpath("/optional_field", serde_xpath::Text)]
     maybe_value: Option<String>,
 }
 ```
@@ -148,7 +148,7 @@ If the XPath doesn't match any element, `None` is returned.
 Use `Vec<T>` with `#[serde(default)]` for repeating elements:
 
 ```rust
-#[derive(serde_xml::Deserialize)]
+#[derive(serde_xpath::Deserialize)]
 #[xpath("/order")]
 struct Order {
     #[serde(default)]
@@ -156,7 +156,7 @@ struct Order {
     items: Vec<Item>,
 }
 
-#[derive(serde_xml::Deserialize)]
+#[derive(serde_xpath::Deserialize)]
 struct Item {
     #[xpath("/@sku")]
     sku: String,
@@ -179,7 +179,7 @@ The following primitive types are supported for field deserialization:
 - `f32`, `f64`
 - `char`
 - `Option<T>` (where T is a supported type)
-- `Vec<T>` (where T is a struct with `#[derive(serde_xml::Deserialize)]`)
+- `Vec<T>` (where T is a struct with `#[derive(serde_xpath::Deserialize)]`)
 
 ### XPath Subset Supported
 
@@ -221,7 +221,7 @@ The following features are **NOT** currently supported:
 ### Other Limitations
 
 - Only deserialization is supported (no serialization)
-- The standard `serde::Deserialize` trait implementation returns an error; you must use `serde_xml::from_str()`
+- The standard `serde::Deserialize` trait implementation returns an error; you must use `serde_xpath::from_str()`
 - All XPath expressions must be absolute paths starting with `/`
 - No support for XML namespaces
 - No streaming/incremental parsing (entire document is loaded into memory)
@@ -230,8 +230,8 @@ The following features are **NOT** currently supported:
 
 This workspace contains two crates:
 
-- **serde_xml**: The main runtime crate with the deserializer, XPath parser, and error types
-- **serde_xml_derive**: The procedural macro crate that generates the `Deserialize` implementation
+- **serde_xpath**: The main runtime crate with the deserializer, XPath parser, and error types
+- **serde_xpath_derive**: The procedural macro crate that generates the `Deserialize` implementation
 
 The crate uses [roxmltree](https://crates.io/crates/roxmltree) for XML parsing, which provides a fast, read-only DOM.
 

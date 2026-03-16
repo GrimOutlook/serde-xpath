@@ -56,17 +56,17 @@ dependencies = [
 ]
 
 [[package]]
-name = "serde_xml"
+name = "serde_xpath"
 version = "0.1.0"
 dependencies = [
  "roxmltree",
  "serde",
- "serde_xml_derive",
+ "serde_xpath_derive",
  "thiserror",
 ]
 
 [[package]]
-name = "serde_xml_derive"
+name = "serde_xpath_derive"
 version = "0.1.0"
 dependencies = [
  "proc-macro2",

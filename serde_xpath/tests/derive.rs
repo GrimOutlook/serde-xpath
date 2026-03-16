@@ -1,12 +1,12 @@
-#[derive(serde_xml::Deserialize, PartialEq, Debug)]
+#[derive(serde_xpath::Deserialize, PartialEq, Debug)]
 // All attributes of this struct will have thier XPATHs made relative to this
 // path
 #[xpath("/magicdraw/signal")]
 struct TestStruct {
-    // `serde_xml::Text` placed after the XPATH indicates that the text
+    // `serde_xpath::Text` placed after the XPATH indicates that the text
     // contained in the given XPATH should be deserialized instead of the
     // entire element iteself.
-    #[xpath("/name", serde_xml::Text)]
+    #[xpath("/name", serde_xpath::Text)]
     name: String,
 
     // Gets the `id="..."` value from the parent XPATH.
@@ -30,7 +30,7 @@ struct TestStruct {
     properties: Vec<Property>,
 }
 
-#[derive(serde_xml::Deserialize, PartialEq, Debug)]
+#[derive(serde_xpath::Deserialize, PartialEq, Debug)]
 struct Generalization {
     #[xpath("/@refid")]
     refid: String,
@@ -38,7 +38,7 @@ struct Generalization {
     name: String,
 }
 
-#[derive(serde_xml::Deserialize, PartialEq, Debug)]
+#[derive(serde_xpath::Deserialize, PartialEq, Debug)]
 struct Property {
     #[xpath("/@refid")]
     refid: String,
@@ -63,7 +63,7 @@ fn test_derive() {
 </magicdraw>
 "#;
     assert_eq!(
-        serde_xml::from_str::<TestStruct>(input).unwrap(),
+        serde_xpath::from_str::<TestStruct>(input).unwrap(),
         TestStruct {
             name: "SIGNAL_NAME".to_string(),
             id: "SIGNAL_ID".to_string(),

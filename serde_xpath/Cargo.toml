@@ -1,5 +1,5 @@
 [package]
-name = "serde_xml"
+name = "serde_xpath"
 version = "0.1.0"
 edition = "2024"
 
@@ -7,4 +7,4 @@ edition = "2024"
 serde = "1.0"
 roxmltree = "0.20"
 thiserror = "2.0"
-serde_xml_derive = { path = "../serde_xml_derive" }
+serde_xpath_derive = { path = "../serde_xpath_derive" }

@@ -46,19 +46,19 @@ pub fn derive_deserialize(input: TokenStream) -> TokenStream {
 
         let kind_tokens = match kind.as_str() {
             "Attribute" => {
-                quote! { serde_xml::__private::FieldKind::Attribute }
+                quote! { serde_xpath::__private::FieldKind::Attribute }
             }
-            "Text" => quote! { serde_xml::__private::FieldKind::Text },
-            "Sequence" => quote! { serde_xml::__private::FieldKind::Sequence },
-            "Optional" => quote! { serde_xml::__private::FieldKind::Optional },
+            "Text" => quote! { serde_xpath::__private::FieldKind::Text },
+            "Sequence" => quote! { serde_xpath::__private::FieldKind::Sequence },
+            "Optional" => quote! { serde_xpath::__private::FieldKind::Optional },
             "OptionalSequence" => {
-                quote! { serde_xml::__private::FieldKind::OptionalSequence }
+                quote! { serde_xpath::__private::FieldKind::OptionalSequence }
             }
-            _ => quote! { serde_xml::__private::FieldKind::Element },
+            _ => quote! { serde_xpath::__private::FieldKind::Element },
         };
 
         field_descriptors.push(quote! {
-            serde_xml::__private::FieldDescriptor {
+            serde_xpath::__private::FieldDescriptor {
                 name: #field_name_str,
                 xpath: #xpath,
                 kind: #kind_tokens,
@@ -146,22 +146,22 @@ pub fn derive_deserialize(input: TokenStream) -> TokenStream {
                 D: serde::Deserializer<'de>,
             {
                 // This path is used when deserializing from a non-XPath deserializer
-                // For now, return an error suggesting to use serde_xml::from_str
+                // For now, return an error suggesting to use serde_xpath::from_str
                 Err(serde::de::Error::custom(
-                    "use serde_xml::from_str to deserialize this type"
+                    "use serde_xpath::from_str to deserialize this type"
                 ))
             }
         }
 
-        impl serde_xml::FromXml for #name {
-            fn from_xml(xml: &str) -> std::result::Result<Self, serde_xml::Error> {
+        impl serde_xpath::FromXml for #name {
+            fn from_xml(xml: &str) -> std::result::Result<Self, serde_xpath::Error> {
                 Self::__deserialize_from_xml(xml)
             }
         }
 
         impl #name {
-            const __XPATH_DESCRIPTOR: serde_xml::__private::StructDescriptor =
-                serde_xml::__private::StructDescriptor {
+            const __XPATH_DESCRIPTOR: serde_xpath::__private::StructDescriptor =
+                serde_xpath::__private::StructDescriptor {
                     name: stringify!(#name),
                     root_xpath: #root_xpath,
                     fields: &[
@@ -172,8 +172,8 @@ pub fn derive_deserialize(input: TokenStream) -> TokenStream {
             #[doc(hidden)]
             pub fn __deserialize_from_xml(
                 xml: &str,
-            ) -> std::result::Result<Self, serde_xml::Error> {
-                serde_xml::from_str_with_descriptor(
+            ) -> std::result::Result<Self, serde_xpath::Error> {
+                serde_xpath::from_str_with_descriptor(
                     xml,
                     &Self::__XPATH_DESCRIPTOR,
                     |deser| {
@@ -189,9 +189,9 @@ pub fn derive_deserialize(input: TokenStream) -> TokenStream {
             #[doc(hidden)]
             pub fn __deserialize_from_node<'a, 'input>(
                 node: roxmltree::Node<'a, 'input>,
-                parent_descriptor: &'static serde_xml::__private::StructDescriptor,
-            ) -> std::result::Result<Self, serde_xml::Error> {
-                serde_xml::__private::deserialize_struct_from_node(
+                parent_descriptor: &'static serde_xpath::__private::StructDescriptor,
+            ) -> std::result::Result<Self, serde_xpath::Error> {
+                serde_xpath::__private::deserialize_struct_from_node(
                     node,
                     &Self::__XPATH_DESCRIPTOR,
                     |deser| {
@@ -232,9 +232,9 @@ fn get_field_xpath_attr(attrs: &[Attribute]) -> (Option<String>, bool) {
             && let Meta::List(meta_list) = &attr.meta
         {
             let tokens = meta_list.tokens.to_string();
-            // Check if it contains serde_xml::Text
+            // Check if it contains serde_xpath::Text
             let is_text =
-                tokens.contains("serde_xml::Text") || tokens.contains("Text");
+                tokens.contains("serde_xpath::Text") || tokens.contains("Text");
 
             // Parse the xpath string (first argument)
             let parts: Vec<&str> = tokens.split(',').collect();
@@ -345,12 +345,12 @@ fn generate_nested_struct_deser(
 ) -> proc_macro2::TokenStream {
     quote! {
         let #field_name: #field_type = {
-            let xpath = serde_xml::xpath::XPath::parse(#xpath)
-                .map_err(|e| serde_xml::Error::XPath(e))?;
+            let xpath = serde_xpath::xpath::XPath::parse(#xpath)
+                .map_err(|e| serde_xpath::Error::XPath(e))?;
             let result = xpath.evaluate_single(deser.node())
-                .ok_or_else(|| serde_xml::Error::MissingField(#field_name_str.to_string()))?;
+                .ok_or_else(|| serde_xpath::Error::MissingField(#field_name_str.to_string()))?;
             let node = result.as_node()
-                .ok_or_else(|| serde_xml::Error::XPath(format!("expected element for field '{}'", #field_name_str)))?;
+                .ok_or_else(|| serde_xpath::Error::XPath(format!("expected element for field '{}'", #field_name_str)))?;
             #field_type::__deserialize_from_node(node, &Self::__XPATH_DESCRIPTOR)?
         };
     }
@@ -364,8 +364,8 @@ fn generate_optional_nested_deser(
 ) -> proc_macro2::TokenStream {
     quote! {
         let #field_name: Option<#inner_type> = {
-            let xpath = serde_xml::xpath::XPath::parse(#xpath)
-                .map_err(|e| serde_xml::Error::XPath(e))?;
+            let xpath = serde_xpath::xpath::XPath::parse(#xpath)
+                .map_err(|e| serde_xpath::Error::XPath(e))?;
             match xpath.evaluate_single(deser.node()) {
                 Some(result) => {
                     match result.as_node() {
@@ -389,8 +389,8 @@ fn generate_optional_simple_deser(
     if is_text {
         quote! {
             let #field_name: Option<#inner_type> = {
-                let xpath = serde_xml::xpath::XPath::parse(#xpath)
-                    .map_err(|e| serde_xml::Error::XPath(e))?;
+                let xpath = serde_xpath::xpath::XPath::parse(#xpath)
+                    .map_err(|e| serde_xpath::Error::XPath(e))?;
                 match xpath.evaluate_single(deser.node()) {
                     Some(result) => {
                         result.text().map(|s| s.to_string())
@@ -402,8 +402,8 @@ fn generate_optional_simple_deser(
     } else {
         quote! {
             let #field_name: Option<#inner_type> = {
-                let xpath = serde_xml::xpath::XPath::parse(#xpath)
-                    .map_err(|e| serde_xml::Error::XPath(e))?;
+                let xpath = serde_xpath::xpath::XPath::parse(#xpath)
+                    .map_err(|e| serde_xpath::Error::XPath(e))?;
                 match xpath.evaluate_single(deser.node()) {
                     Some(result) => {
                         match result.as_str() {
@@ -426,8 +426,8 @@ fn generate_vec_nested_deser(
 ) -> proc_macro2::TokenStream {
     quote! {
         let #field_name: Vec<#inner_type> = {
-            let xpath = serde_xml::xpath::XPath::parse(#xpath)
-                .map_err(|e| serde_xml::Error::XPath(e))?;
+            let xpath = serde_xpath::xpath::XPath::parse(#xpath)
+                .map_err(|e| serde_xpath::Error::XPath(e))?;
             let results = xpath.evaluate_all(deser.node());
             let mut items = Vec::new();
             for result in results {

@@ -4,7 +4,7 @@ pub mod xpath;
 
 pub use de::__private;
 pub use error::Error;
-pub use serde_xml_derive::Deserialize;
+pub use serde_xpath_derive::Deserialize;
 
 /// Marker type for extracting text content from an element
 pub struct Text;
