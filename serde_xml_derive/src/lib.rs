@@ -1,6 +1,11 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, DeriveInput, Data, Fields, Attribute, Meta};
+use syn::Attribute;
+use syn::Data;
+use syn::DeriveInput;
+use syn::Fields;
+use syn::Meta;
+use syn::parse_macro_input;
 
 #[proc_macro_derive(Deserialize, attributes(xpath, serde))]
 pub fn derive_deserialize(input: TokenStream) -> TokenStream {
@@ -32,14 +37,23 @@ pub fn derive_deserialize(input: TokenStream) -> TokenStream {
         let field_type = &field.ty;
 
         // Determine field kind based on type and attributes
-        let (kind, is_optional, is_vec) = determine_field_kind(field_type, is_text, has_serde_default, &xpath);
+        let (kind, is_optional, is_vec) = determine_field_kind(
+            field_type,
+            is_text,
+            has_serde_default,
+            &xpath,
+        );
 
         let kind_tokens = match kind.as_str() {
-            "Attribute" => quote! { serde_xml::__private::FieldKind::Attribute },
+            "Attribute" => {
+                quote! { serde_xml::__private::FieldKind::Attribute }
+            }
             "Text" => quote! { serde_xml::__private::FieldKind::Text },
             "Sequence" => quote! { serde_xml::__private::FieldKind::Sequence },
             "Optional" => quote! { serde_xml::__private::FieldKind::Optional },
-            "OptionalSequence" => quote! { serde_xml::__private::FieldKind::OptionalSequence },
+            "OptionalSequence" => {
+                quote! { serde_xml::__private::FieldKind::OptionalSequence }
+            }
             _ => quote! { serde_xml::__private::FieldKind::Element },
         };
 
@@ -62,7 +76,12 @@ pub fn derive_deserialize(input: TokenStream) -> TokenStream {
                     }
                 } else {
                     // Nested struct in Vec
-                    generate_vec_nested_deser(field_name, &field_name_str, &xpath, &inner)
+                    generate_vec_nested_deser(
+                        field_name,
+                        &field_name_str,
+                        &xpath,
+                        &inner,
+                    )
                 }
             } else {
                 quote! {
@@ -74,10 +93,21 @@ pub fn derive_deserialize(input: TokenStream) -> TokenStream {
             let inner_type = extract_inner_type(field_type, "Option");
             if let Some(inner) = inner_type {
                 if is_simple_type(&inner) {
-                    generate_optional_simple_deser(field_name, &field_name_str, &xpath, &inner, is_text)
+                    generate_optional_simple_deser(
+                        field_name,
+                        &field_name_str,
+                        &xpath,
+                        &inner,
+                        is_text,
+                    )
                 } else {
                     // Nested struct in Option
-                    generate_optional_nested_deser(field_name, &field_name_str, &xpath, &inner)
+                    generate_optional_nested_deser(
+                        field_name,
+                        &field_name_str,
+                        &xpath,
+                        &inner,
+                    )
                 }
             } else {
                 quote! {
@@ -95,13 +125,19 @@ pub fn derive_deserialize(input: TokenStream) -> TokenStream {
             }
         } else {
             // Nested struct
-            generate_nested_struct_deser(field_name, &field_name_str, &xpath, field_type)
+            generate_nested_struct_deser(
+                field_name,
+                &field_name_str,
+                &xpath,
+                field_type,
+            )
         };
 
         field_deserializations.push(deser_code);
     }
 
-    let field_names: Vec<_> = fields.iter().map(|f| f.ident.as_ref().unwrap()).collect();
+    let field_names: Vec<_> =
+        fields.iter().map(|f| f.ident.as_ref().unwrap()).collect();
 
     let expanded = quote! {
         impl<'de> serde::Deserialize<'de> for #name {
@@ -175,13 +211,15 @@ pub fn derive_deserialize(input: TokenStream) -> TokenStream {
 
 fn get_xpath_attr(attrs: &[Attribute]) -> Option<String> {
     for attr in attrs {
-        if attr.path().is_ident("xpath") {
-            if let Meta::List(meta_list) = &attr.meta {
-                let tokens = meta_list.tokens.to_string();
-                // Parse the string literal
-                if let Some(s) = tokens.strip_prefix('"').and_then(|s| s.strip_suffix('"')) {
-                    return Some(s.to_string());
-                }
+        if attr.path().is_ident("xpath")
+            && let Meta::List(meta_list) = &attr.meta
+        {
+            let tokens = meta_list.tokens.to_string();
+            // Parse the string literal
+            if let Some(s) =
+                tokens.strip_prefix('"').and_then(|s| s.strip_suffix('"'))
+            {
+                return Some(s.to_string());
             }
         }
     }
@@ -190,19 +228,22 @@ fn get_xpath_attr(attrs: &[Attribute]) -> Option<String> {
 
 fn get_field_xpath_attr(attrs: &[Attribute]) -> (Option<String>, bool) {
     for attr in attrs {
-        if attr.path().is_ident("xpath") {
-            if let Meta::List(meta_list) = &attr.meta {
-                let tokens = meta_list.tokens.to_string();
-                // Check if it contains serde_xml::Text
-                let is_text = tokens.contains("serde_xml::Text") || tokens.contains("Text");
+        if attr.path().is_ident("xpath")
+            && let Meta::List(meta_list) = &attr.meta
+        {
+            let tokens = meta_list.tokens.to_string();
+            // Check if it contains serde_xml::Text
+            let is_text =
+                tokens.contains("serde_xml::Text") || tokens.contains("Text");
 
-                // Parse the xpath string (first argument)
-                let parts: Vec<&str> = tokens.split(',').collect();
-                if let Some(first) = parts.first() {
-                    let first = first.trim();
-                    if let Some(s) = first.strip_prefix('"').and_then(|s| s.strip_suffix('"')) {
-                        return (Some(s.to_string()), is_text);
-                    }
+            // Parse the xpath string (first argument)
+            let parts: Vec<&str> = tokens.split(',').collect();
+            if let Some(first) = parts.first() {
+                let first = first.trim();
+                if let Some(s) =
+                    first.strip_prefix('"').and_then(|s| s.strip_suffix('"'))
+                {
+                    return (Some(s.to_string()), is_text);
                 }
             }
         }
@@ -212,23 +253,29 @@ fn get_field_xpath_attr(attrs: &[Attribute]) -> (Option<String>, bool) {
 
 fn has_serde_default_attr(attrs: &[Attribute]) -> bool {
     for attr in attrs {
-        if attr.path().is_ident("serde") {
-            if let Meta::List(meta_list) = &attr.meta {
-                let tokens = meta_list.tokens.to_string();
-                if tokens.contains("default") {
-                    return true;
-                }
+        if attr.path().is_ident("serde")
+            && let Meta::List(meta_list) = &attr.meta
+        {
+            let tokens = meta_list.tokens.to_string();
+            if tokens.contains("default") {
+                return true;
             }
         }
     }
     false
 }
 
-fn determine_field_kind(ty: &syn::Type, is_text: bool, has_default: bool, xpath: &str) -> (String, bool, bool) {
+fn determine_field_kind(
+    ty: &syn::Type,
+    is_text: bool,
+    has_default: bool,
+    xpath: &str,
+) -> (String, bool, bool) {
     let type_str = quote!(#ty).to_string();
 
     let is_vec = type_str.starts_with("Vec <") || type_str.starts_with("Vec<");
-    let is_option = type_str.starts_with("Option <") || type_str.starts_with("Option<");
+    let is_option =
+        type_str.starts_with("Option <") || type_str.starts_with("Option<");
 
     // Check if this is an attribute xpath (ends with /@attr or is just /@attr)
     let is_attribute = xpath.contains("/@");
@@ -256,16 +303,13 @@ fn determine_field_kind(ty: &syn::Type, is_text: bool, has_default: bool, xpath:
 }
 
 fn extract_inner_type(ty: &syn::Type, wrapper: &str) -> Option<syn::Type> {
-    if let syn::Type::Path(type_path) = ty {
-        if let Some(segment) = type_path.path.segments.last() {
-            if segment.ident == wrapper {
-                if let syn::PathArguments::AngleBracketed(args) = &segment.arguments {
-                    if let Some(syn::GenericArgument::Type(inner)) = args.args.first() {
-                        return Some(inner.clone());
-                    }
-                }
-            }
-        }
+    if let syn::Type::Path(type_path) = ty
+        && let Some(segment) = type_path.path.segments.last()
+        && segment.ident == wrapper
+        && let syn::PathArguments::AngleBracketed(args) = &segment.arguments
+        && let Some(syn::GenericArgument::Type(inner)) = args.args.first()
+    {
+        return Some(inner.clone());
     }
     None
 }
@@ -274,9 +318,22 @@ fn is_simple_type(ty: &syn::Type) -> bool {
     let type_str = quote!(#ty).to_string();
     matches!(
         type_str.as_str(),
-        "String" | "str" | "i8" | "i16" | "i32" | "i64" | "u8" | "u16" | "u32" | "u64"
-        | "f32" | "f64" | "bool" | "char"
-        | "& str" | "& 'static str"
+        "String"
+            | "str"
+            | "i8"
+            | "i16"
+            | "i32"
+            | "i64"
+            | "u8"
+            | "u16"
+            | "u32"
+            | "u64"
+            | "f32"
+            | "f64"
+            | "bool"
+            | "char"
+            | "& str"
+            | "& 'static str"
     )
 }
 

@@ -1,7 +1,10 @@
-use crate::error::Error;
-use crate::xpath::{XPath, XPathResult};
 use roxmltree::Node;
-use serde::de::{self, Visitor};
+use serde::de::Visitor;
+use serde::de::{self};
+
+use crate::error::Error;
+use crate::xpath::XPath;
+use crate::xpath::XPathResult;
 
 pub struct XPathDeserializer<'a, 'input> {
     node: Node<'a, 'input>,
@@ -37,7 +40,9 @@ impl<'de, 'a, 'input> de::Deserializer<'de> for XPathDeserializer<'a, 'input> {
         V: Visitor<'de>,
     {
         let text = self.node.text().unwrap_or("");
-        let b = text.parse::<bool>().map_err(|_| Error::Custom(format!("invalid bool: {}", text)))?;
+        let b = text
+            .parse::<bool>()
+            .map_err(|_| Error::Custom(format!("invalid bool: {}", text)))?;
         visitor.visit_bool(b)
     }
 
@@ -46,7 +51,9 @@ impl<'de, 'a, 'input> de::Deserializer<'de> for XPathDeserializer<'a, 'input> {
         V: Visitor<'de>,
     {
         let text = self.node.text().unwrap_or("");
-        let n = text.parse::<i8>().map_err(|_| Error::Custom(format!("invalid i8: {}", text)))?;
+        let n = text
+            .parse::<i8>()
+            .map_err(|_| Error::Custom(format!("invalid i8: {}", text)))?;
         visitor.visit_i8(n)
     }
 
@@ -55,7 +62,9 @@ impl<'de, 'a, 'input> de::Deserializer<'de> for XPathDeserializer<'a, 'input> {
         V: Visitor<'de>,
     {
         let text = self.node.text().unwrap_or("");
-        let n = text.parse::<i16>().map_err(|_| Error::Custom(format!("invalid i16: {}", text)))?;
+        let n = text
+            .parse::<i16>()
+            .map_err(|_| Error::Custom(format!("invalid i16: {}", text)))?;
         visitor.visit_i16(n)
     }
 
@@ -64,7 +73,9 @@ impl<'de, 'a, 'input> de::Deserializer<'de> for XPathDeserializer<'a, 'input> {
         V: Visitor<'de>,
     {
         let text = self.node.text().unwrap_or("");
-        let n = text.parse::<i32>().map_err(|_| Error::Custom(format!("invalid i32: {}", text)))?;
+        let n = text
+            .parse::<i32>()
+            .map_err(|_| Error::Custom(format!("invalid i32: {}", text)))?;
         visitor.visit_i32(n)
     }
 
@@ -73,7 +84,9 @@ impl<'de, 'a, 'input> de::Deserializer<'de> for XPathDeserializer<'a, 'input> {
         V: Visitor<'de>,
     {
         let text = self.node.text().unwrap_or("");
-        let n = text.parse::<i64>().map_err(|_| Error::Custom(format!("invalid i64: {}", text)))?;
+        let n = text
+            .parse::<i64>()
+            .map_err(|_| Error::Custom(format!("invalid i64: {}", text)))?;
         visitor.visit_i64(n)
     }
 
@@ -82,7 +95,9 @@ impl<'de, 'a, 'input> de::Deserializer<'de> for XPathDeserializer<'a, 'input> {
         V: Visitor<'de>,
     {
         let text = self.node.text().unwrap_or("");
-        let n = text.parse::<u8>().map_err(|_| Error::Custom(format!("invalid u8: {}", text)))?;
+        let n = text
+            .parse::<u8>()
+            .map_err(|_| Error::Custom(format!("invalid u8: {}", text)))?;
         visitor.visit_u8(n)
     }
 
@@ -91,7 +106,9 @@ impl<'de, 'a, 'input> de::Deserializer<'de> for XPathDeserializer<'a, 'input> {
         V: Visitor<'de>,
     {
         let text = self.node.text().unwrap_or("");
-        let n = text.parse::<u16>().map_err(|_| Error::Custom(format!("invalid u16: {}", text)))?;
+        let n = text
+            .parse::<u16>()
+            .map_err(|_| Error::Custom(format!("invalid u16: {}", text)))?;
         visitor.visit_u16(n)
     }
 
@@ -100,7 +117,9 @@ impl<'de, 'a, 'input> de::Deserializer<'de> for XPathDeserializer<'a, 'input> {
         V: Visitor<'de>,
     {
         let text = self.node.text().unwrap_or("");
-        let n = text.parse::<u32>().map_err(|_| Error::Custom(format!("invalid u32: {}", text)))?;
+        let n = text
+            .parse::<u32>()
+            .map_err(|_| Error::Custom(format!("invalid u32: {}", text)))?;
         visitor.visit_u32(n)
     }
 
@@ -109,7 +128,9 @@ impl<'de, 'a, 'input> de::Deserializer<'de> for XPathDeserializer<'a, 'input> {
         V: Visitor<'de>,
     {
         let text = self.node.text().unwrap_or("");
-        let n = text.parse::<u64>().map_err(|_| Error::Custom(format!("invalid u64: {}", text)))?;
+        let n = text
+            .parse::<u64>()
+            .map_err(|_| Error::Custom(format!("invalid u64: {}", text)))?;
         visitor.visit_u64(n)
     }
 
@@ -118,7 +139,9 @@ impl<'de, 'a, 'input> de::Deserializer<'de> for XPathDeserializer<'a, 'input> {
         V: Visitor<'de>,
     {
         let text = self.node.text().unwrap_or("");
-        let n = text.parse::<f32>().map_err(|_| Error::Custom(format!("invalid f32: {}", text)))?;
+        let n = text
+            .parse::<f32>()
+            .map_err(|_| Error::Custom(format!("invalid f32: {}", text)))?;
         visitor.visit_f32(n)
     }
 
@@ -127,7 +150,9 @@ impl<'de, 'a, 'input> de::Deserializer<'de> for XPathDeserializer<'a, 'input> {
         V: Visitor<'de>,
     {
         let text = self.node.text().unwrap_or("");
-        let n = text.parse::<f64>().map_err(|_| Error::Custom(format!("invalid f64: {}", text)))?;
+        let n = text
+            .parse::<f64>()
+            .map_err(|_| Error::Custom(format!("invalid f64: {}", text)))?;
         visitor.visit_f64(n)
     }
 
@@ -136,7 +161,9 @@ impl<'de, 'a, 'input> de::Deserializer<'de> for XPathDeserializer<'a, 'input> {
         V: Visitor<'de>,
     {
         let text = self.node.text().unwrap_or("");
-        let c = text.chars().next().ok_or_else(|| Error::Custom("empty string for char".to_string()))?;
+        let c = text.chars().next().ok_or_else(|| {
+            Error::Custom("empty string for char".to_string())
+        })?;
         visitor.visit_char(c)
     }
 
@@ -163,7 +190,10 @@ impl<'de, 'a, 'input> de::Deserializer<'de> for XPathDeserializer<'a, 'input> {
         Err(Error::Custom("bytes not supported".to_string()))
     }
 
-    fn deserialize_byte_buf<V>(self, _visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_byte_buf<V>(
+        self,
+        _visitor: V,
+    ) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
@@ -210,10 +240,16 @@ impl<'de, 'a, 'input> de::Deserializer<'de> for XPathDeserializer<'a, 'input> {
     where
         V: Visitor<'de>,
     {
-        Err(Error::Custom("seq deserialization requires xpath context".to_string()))
+        Err(Error::Custom(
+            "seq deserialization requires xpath context".to_string(),
+        ))
     }
 
-    fn deserialize_tuple<V>(self, _len: usize, _visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_tuple<V>(
+        self,
+        _len: usize,
+        _visitor: V,
+    ) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
@@ -248,7 +284,9 @@ impl<'de, 'a, 'input> de::Deserializer<'de> for XPathDeserializer<'a, 'input> {
     where
         V: Visitor<'de>,
     {
-        Err(Error::Custom("struct deserialization requires xpath descriptors".to_string()))
+        Err(Error::Custom(
+            "struct deserialization requires xpath descriptors".to_string(),
+        ))
     }
 
     fn deserialize_enum<V>(
@@ -263,14 +301,20 @@ impl<'de, 'a, 'input> de::Deserializer<'de> for XPathDeserializer<'a, 'input> {
         Err(Error::Custom("enum not supported".to_string()))
     }
 
-    fn deserialize_identifier<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_identifier<V>(
+        self,
+        visitor: V,
+    ) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
         self.deserialize_string(visitor)
     }
 
-    fn deserialize_ignored_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_ignored_any<V>(
+        self,
+        visitor: V,
+    ) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
@@ -303,7 +347,9 @@ impl<'de, 'a> de::Deserializer<'de> for AttributeDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let b = self.value.parse::<bool>().map_err(|_| Error::Custom(format!("invalid bool: {}", self.value)))?;
+        let b = self.value.parse::<bool>().map_err(|_| {
+            Error::Custom(format!("invalid bool: {}", self.value))
+        })?;
         visitor.visit_bool(b)
     }
 
@@ -311,7 +357,9 @@ impl<'de, 'a> de::Deserializer<'de> for AttributeDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.value.parse::<i8>().map_err(|_| Error::Custom(format!("invalid i8: {}", self.value)))?;
+        let n = self.value.parse::<i8>().map_err(|_| {
+            Error::Custom(format!("invalid i8: {}", self.value))
+        })?;
         visitor.visit_i8(n)
     }
 
@@ -319,7 +367,9 @@ impl<'de, 'a> de::Deserializer<'de> for AttributeDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.value.parse::<i16>().map_err(|_| Error::Custom(format!("invalid i16: {}", self.value)))?;
+        let n = self.value.parse::<i16>().map_err(|_| {
+            Error::Custom(format!("invalid i16: {}", self.value))
+        })?;
         visitor.visit_i16(n)
     }
 
@@ -327,7 +377,9 @@ impl<'de, 'a> de::Deserializer<'de> for AttributeDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.value.parse::<i32>().map_err(|_| Error::Custom(format!("invalid i32: {}", self.value)))?;
+        let n = self.value.parse::<i32>().map_err(|_| {
+            Error::Custom(format!("invalid i32: {}", self.value))
+        })?;
         visitor.visit_i32(n)
     }
 
@@ -335,7 +387,9 @@ impl<'de, 'a> de::Deserializer<'de> for AttributeDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.value.parse::<i64>().map_err(|_| Error::Custom(format!("invalid i64: {}", self.value)))?;
+        let n = self.value.parse::<i64>().map_err(|_| {
+            Error::Custom(format!("invalid i64: {}", self.value))
+        })?;
         visitor.visit_i64(n)
     }
 
@@ -343,7 +397,9 @@ impl<'de, 'a> de::Deserializer<'de> for AttributeDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.value.parse::<u8>().map_err(|_| Error::Custom(format!("invalid u8: {}", self.value)))?;
+        let n = self.value.parse::<u8>().map_err(|_| {
+            Error::Custom(format!("invalid u8: {}", self.value))
+        })?;
         visitor.visit_u8(n)
     }
 
@@ -351,7 +407,9 @@ impl<'de, 'a> de::Deserializer<'de> for AttributeDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.value.parse::<u16>().map_err(|_| Error::Custom(format!("invalid u16: {}", self.value)))?;
+        let n = self.value.parse::<u16>().map_err(|_| {
+            Error::Custom(format!("invalid u16: {}", self.value))
+        })?;
         visitor.visit_u16(n)
     }
 
@@ -359,7 +417,9 @@ impl<'de, 'a> de::Deserializer<'de> for AttributeDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.value.parse::<u32>().map_err(|_| Error::Custom(format!("invalid u32: {}", self.value)))?;
+        let n = self.value.parse::<u32>().map_err(|_| {
+            Error::Custom(format!("invalid u32: {}", self.value))
+        })?;
         visitor.visit_u32(n)
     }
 
@@ -367,7 +427,9 @@ impl<'de, 'a> de::Deserializer<'de> for AttributeDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.value.parse::<u64>().map_err(|_| Error::Custom(format!("invalid u64: {}", self.value)))?;
+        let n = self.value.parse::<u64>().map_err(|_| {
+            Error::Custom(format!("invalid u64: {}", self.value))
+        })?;
         visitor.visit_u64(n)
     }
 
@@ -375,7 +437,9 @@ impl<'de, 'a> de::Deserializer<'de> for AttributeDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.value.parse::<f32>().map_err(|_| Error::Custom(format!("invalid f32: {}", self.value)))?;
+        let n = self.value.parse::<f32>().map_err(|_| {
+            Error::Custom(format!("invalid f32: {}", self.value))
+        })?;
         visitor.visit_f32(n)
     }
 
@@ -383,7 +447,9 @@ impl<'de, 'a> de::Deserializer<'de> for AttributeDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.value.parse::<f64>().map_err(|_| Error::Custom(format!("invalid f64: {}", self.value)))?;
+        let n = self.value.parse::<f64>().map_err(|_| {
+            Error::Custom(format!("invalid f64: {}", self.value))
+        })?;
         visitor.visit_f64(n)
     }
 
@@ -391,7 +457,9 @@ impl<'de, 'a> de::Deserializer<'de> for AttributeDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let c = self.value.chars().next().ok_or_else(|| Error::Custom("empty string for char".to_string()))?;
+        let c = self.value.chars().next().ok_or_else(|| {
+            Error::Custom("empty string for char".to_string())
+        })?;
         visitor.visit_char(c)
     }
 
@@ -416,7 +484,10 @@ impl<'de, 'a> de::Deserializer<'de> for AttributeDeserializer<'a> {
         Err(Error::Custom("bytes not supported".to_string()))
     }
 
-    fn deserialize_byte_buf<V>(self, _visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_byte_buf<V>(
+        self,
+        _visitor: V,
+    ) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
@@ -466,7 +537,11 @@ impl<'de, 'a> de::Deserializer<'de> for AttributeDeserializer<'a> {
         Err(Error::Custom("seq not supported for attributes".to_string()))
     }
 
-    fn deserialize_tuple<V>(self, _len: usize, _visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_tuple<V>(
+        self,
+        _len: usize,
+        _visitor: V,
+    ) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
@@ -516,14 +591,20 @@ impl<'de, 'a> de::Deserializer<'de> for AttributeDeserializer<'a> {
         Err(Error::Custom("enum not supported".to_string()))
     }
 
-    fn deserialize_identifier<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_identifier<V>(
+        self,
+        visitor: V,
+    ) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
         self.deserialize_string(visitor)
     }
 
-    fn deserialize_ignored_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_ignored_any<V>(
+        self,
+        visitor: V,
+    ) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
@@ -556,7 +637,9 @@ impl<'de, 'a> de::Deserializer<'de> for TextDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let b = self.text.parse::<bool>().map_err(|_| Error::Custom(format!("invalid bool: {}", self.text)))?;
+        let b = self.text.parse::<bool>().map_err(|_| {
+            Error::Custom(format!("invalid bool: {}", self.text))
+        })?;
         visitor.visit_bool(b)
     }
 
@@ -564,7 +647,10 @@ impl<'de, 'a> de::Deserializer<'de> for TextDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.text.parse::<i8>().map_err(|_| Error::Custom(format!("invalid i8: {}", self.text)))?;
+        let n = self
+            .text
+            .parse::<i8>()
+            .map_err(|_| Error::Custom(format!("invalid i8: {}", self.text)))?;
         visitor.visit_i8(n)
     }
 
@@ -572,7 +658,9 @@ impl<'de, 'a> de::Deserializer<'de> for TextDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.text.parse::<i16>().map_err(|_| Error::Custom(format!("invalid i16: {}", self.text)))?;
+        let n = self.text.parse::<i16>().map_err(|_| {
+            Error::Custom(format!("invalid i16: {}", self.text))
+        })?;
         visitor.visit_i16(n)
     }
 
@@ -580,7 +668,9 @@ impl<'de, 'a> de::Deserializer<'de> for TextDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.text.parse::<i32>().map_err(|_| Error::Custom(format!("invalid i32: {}", self.text)))?;
+        let n = self.text.parse::<i32>().map_err(|_| {
+            Error::Custom(format!("invalid i32: {}", self.text))
+        })?;
         visitor.visit_i32(n)
     }
 
@@ -588,7 +678,9 @@ impl<'de, 'a> de::Deserializer<'de> for TextDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.text.parse::<i64>().map_err(|_| Error::Custom(format!("invalid i64: {}", self.text)))?;
+        let n = self.text.parse::<i64>().map_err(|_| {
+            Error::Custom(format!("invalid i64: {}", self.text))
+        })?;
         visitor.visit_i64(n)
     }
 
@@ -596,7 +688,10 @@ impl<'de, 'a> de::Deserializer<'de> for TextDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.text.parse::<u8>().map_err(|_| Error::Custom(format!("invalid u8: {}", self.text)))?;
+        let n = self
+            .text
+            .parse::<u8>()
+            .map_err(|_| Error::Custom(format!("invalid u8: {}", self.text)))?;
         visitor.visit_u8(n)
     }
 
@@ -604,7 +699,9 @@ impl<'de, 'a> de::Deserializer<'de> for TextDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.text.parse::<u16>().map_err(|_| Error::Custom(format!("invalid u16: {}", self.text)))?;
+        let n = self.text.parse::<u16>().map_err(|_| {
+            Error::Custom(format!("invalid u16: {}", self.text))
+        })?;
         visitor.visit_u16(n)
     }
 
@@ -612,7 +709,9 @@ impl<'de, 'a> de::Deserializer<'de> for TextDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.text.parse::<u32>().map_err(|_| Error::Custom(format!("invalid u32: {}", self.text)))?;
+        let n = self.text.parse::<u32>().map_err(|_| {
+            Error::Custom(format!("invalid u32: {}", self.text))
+        })?;
         visitor.visit_u32(n)
     }
 
@@ -620,7 +719,9 @@ impl<'de, 'a> de::Deserializer<'de> for TextDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.text.parse::<u64>().map_err(|_| Error::Custom(format!("invalid u64: {}", self.text)))?;
+        let n = self.text.parse::<u64>().map_err(|_| {
+            Error::Custom(format!("invalid u64: {}", self.text))
+        })?;
         visitor.visit_u64(n)
     }
 
@@ -628,7 +729,9 @@ impl<'de, 'a> de::Deserializer<'de> for TextDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.text.parse::<f32>().map_err(|_| Error::Custom(format!("invalid f32: {}", self.text)))?;
+        let n = self.text.parse::<f32>().map_err(|_| {
+            Error::Custom(format!("invalid f32: {}", self.text))
+        })?;
         visitor.visit_f32(n)
     }
 
@@ -636,7 +739,9 @@ impl<'de, 'a> de::Deserializer<'de> for TextDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let n = self.text.parse::<f64>().map_err(|_| Error::Custom(format!("invalid f64: {}", self.text)))?;
+        let n = self.text.parse::<f64>().map_err(|_| {
+            Error::Custom(format!("invalid f64: {}", self.text))
+        })?;
         visitor.visit_f64(n)
     }
 
@@ -644,7 +749,9 @@ impl<'de, 'a> de::Deserializer<'de> for TextDeserializer<'a> {
     where
         V: Visitor<'de>,
     {
-        let c = self.text.chars().next().ok_or_else(|| Error::Custom("empty string for char".to_string()))?;
+        let c = self.text.chars().next().ok_or_else(|| {
+            Error::Custom("empty string for char".to_string())
+        })?;
         visitor.visit_char(c)
     }
 
@@ -669,7 +776,10 @@ impl<'de, 'a> de::Deserializer<'de> for TextDeserializer<'a> {
         Err(Error::Custom("bytes not supported".to_string()))
     }
 
-    fn deserialize_byte_buf<V>(self, _visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_byte_buf<V>(
+        self,
+        _visitor: V,
+    ) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
@@ -719,7 +829,11 @@ impl<'de, 'a> de::Deserializer<'de> for TextDeserializer<'a> {
         Err(Error::Custom("seq not supported for text".to_string()))
     }
 
-    fn deserialize_tuple<V>(self, _len: usize, _visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_tuple<V>(
+        self,
+        _len: usize,
+        _visitor: V,
+    ) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
@@ -769,14 +883,20 @@ impl<'de, 'a> de::Deserializer<'de> for TextDeserializer<'a> {
         Err(Error::Custom("enum not supported".to_string()))
     }
 
-    fn deserialize_identifier<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_identifier<V>(
+        self,
+        visitor: V,
+    ) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
         self.deserialize_string(visitor)
     }
 
-    fn deserialize_ignored_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_ignored_any<V>(
+        self,
+        visitor: V,
+    ) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
@@ -812,7 +932,7 @@ pub mod __private {
         pub fields: &'static [FieldDescriptor],
     }
 
-    pub fn deserialize_xpath_struct<'de, T, F>(
+    pub fn deserialize_xpath_struct<T, F>(
         xml: &str,
         descriptor: &StructDescriptor,
         field_deserializer: F,
@@ -824,18 +944,20 @@ pub mod __private {
         let root = doc.root_element();
 
         // Find the root node using the struct's xpath
-        let root_xpath = XPath::parse(descriptor.root_xpath)
-            .map_err(|e| Error::XPath(e))?;
+        let root_xpath =
+            XPath::parse(descriptor.root_xpath).map_err(Error::XPath)?;
 
         let target_node = root_xpath
             .evaluate_single(root)
             .and_then(|r| r.as_node())
-            .ok_or_else(|| Error::XPath(format!("root xpath '{}' not found", descriptor.root_xpath)))?;
+            .ok_or_else(|| {
+                Error::XPath(format!(
+                    "root xpath '{}' not found",
+                    descriptor.root_xpath
+                ))
+            })?;
 
-        let deser = StructFieldDeserializer {
-            node: target_node,
-            descriptor,
-        };
+        let deser = StructFieldDeserializer { node: target_node, descriptor };
 
         field_deserializer(deser)
     }
@@ -850,38 +972,58 @@ pub mod __private {
             &self,
             field_name: &str,
         ) -> Result<T, Error> {
-            let field = self.descriptor.fields.iter()
+            let field = self
+                .descriptor
+                .fields
+                .iter()
                 .find(|f| f.name == field_name)
                 .ok_or_else(|| Error::MissingField(field_name.to_string()))?;
 
-            let xpath = XPath::parse(field.xpath)
-                .map_err(|e| Error::XPath(e))?;
+            let xpath = XPath::parse(field.xpath).map_err(Error::XPath)?;
 
             match field.kind {
                 FieldKind::Attribute => {
-                    let result = xpath.evaluate_single(self.node)
-                        .ok_or_else(|| Error::MissingField(field_name.to_string()))?;
+                    let result =
+                        xpath.evaluate_single(self.node).ok_or_else(|| {
+                            Error::MissingField(field_name.to_string())
+                        })?;
 
-                    let value = result.as_str()
-                        .ok_or_else(|| Error::XPath(format!("expected attribute for field '{}'", field_name)))?;
+                    let value = result.as_str().ok_or_else(|| {
+                        Error::XPath(format!(
+                            "expected attribute for field '{}'",
+                            field_name
+                        ))
+                    })?;
 
                     T::deserialize(AttributeDeserializer::new(value))
                 }
                 FieldKind::Text => {
-                    let result = xpath.evaluate_single(self.node)
-                        .ok_or_else(|| Error::MissingField(field_name.to_string()))?;
+                    let result =
+                        xpath.evaluate_single(self.node).ok_or_else(|| {
+                            Error::MissingField(field_name.to_string())
+                        })?;
 
-                    let text = result.text()
-                        .ok_or_else(|| Error::XPath(format!("no text content for field '{}'", field_name)))?;
+                    let text = result.text().ok_or_else(|| {
+                        Error::XPath(format!(
+                            "no text content for field '{}'",
+                            field_name
+                        ))
+                    })?;
 
                     T::deserialize(TextDeserializer::new(text))
                 }
                 FieldKind::Element => {
-                    let result = xpath.evaluate_single(self.node)
-                        .ok_or_else(|| Error::MissingField(field_name.to_string()))?;
+                    let result =
+                        xpath.evaluate_single(self.node).ok_or_else(|| {
+                            Error::MissingField(field_name.to_string())
+                        })?;
 
-                    let node = result.as_node()
-                        .ok_or_else(|| Error::XPath(format!("expected element for field '{}'", field_name)))?;
+                    let node = result.as_node().ok_or_else(|| {
+                        Error::XPath(format!(
+                            "expected element for field '{}'",
+                            field_name
+                        ))
+                    })?;
 
                     T::deserialize(XPathDeserializer::new(node))
                 }
@@ -889,7 +1031,8 @@ pub mod __private {
                     // Return None if xpath doesn't match
                     match xpath.evaluate_single(self.node) {
                         Some(_) => {
-                            // The Option<T> will be deserialized, we need to handle this carefully
+                            // The Option<T> will be deserialized, we need to
+                            // handle this carefully
                             // For now, just propagate
                             self.deserialize_field_inner::<T>(field)
                         }
@@ -901,12 +1044,14 @@ pub mod __private {
                 }
                 FieldKind::Sequence => {
                     let results = xpath.evaluate_all(self.node);
-                    let nodes: Vec<_> = results.iter().filter_map(|r| r.as_node()).collect();
+                    let nodes: Vec<_> =
+                        results.iter().filter_map(|r| r.as_node()).collect();
                     T::deserialize(SeqDeserializer::new(nodes))
                 }
                 FieldKind::OptionalSequence => {
                     let results = xpath.evaluate_all(self.node);
-                    let nodes: Vec<_> = results.iter().filter_map(|r| r.as_node()).collect();
+                    let nodes: Vec<_> =
+                        results.iter().filter_map(|r| r.as_node()).collect();
                     T::deserialize(SeqDeserializer::new(nodes))
                 }
             }
@@ -916,18 +1061,21 @@ pub mod __private {
             &self,
             field: &FieldDescriptor,
         ) -> Result<T, Error> {
-            let xpath = XPath::parse(field.xpath)
-                .map_err(|e| Error::XPath(e))?;
+            let xpath = XPath::parse(field.xpath).map_err(Error::XPath)?;
 
-            let result = xpath.evaluate_single(self.node)
+            let result = xpath
+                .evaluate_single(self.node)
                 .ok_or_else(|| Error::MissingField(field.name.to_string()))?;
 
             match result {
-                XPathResult::Node(node) => T::deserialize(XPathDeserializer::new(node)),
-                XPathResult::Attribute(value) => T::deserialize(AttributeDeserializer::new(value)),
+                XPathResult::Node(node) => {
+                    T::deserialize(XPathDeserializer::new(node))
+                }
+                XPathResult::Attribute(value) => {
+                    T::deserialize(AttributeDeserializer::new(value))
+                }
             }
         }
-
 
         pub fn node(&self) -> Node<'a, 'input> {
             self.node
@@ -940,6 +1088,12 @@ pub mod __private {
     impl<'de> de::Deserializer<'de> for OptionNoneDeserializer {
         type Error = Error;
 
+        serde::forward_to_deserialize_any! {
+            bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
+            byte_buf unit unit_struct newtype_struct seq tuple tuple_struct
+            map struct enum identifier ignored_any
+        }
+
         fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
         where
             V: Visitor<'de>,
@@ -947,17 +1101,14 @@ pub mod __private {
             visitor.visit_none()
         }
 
-        fn deserialize_option<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+        fn deserialize_option<V>(
+            self,
+            visitor: V,
+        ) -> Result<V::Value, Self::Error>
         where
             V: Visitor<'de>,
         {
             visitor.visit_none()
-        }
-
-        serde::forward_to_deserialize_any! {
-            bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
-            byte_buf unit unit_struct newtype_struct seq tuple tuple_struct
-            map struct enum identifier ignored_any
         }
     }
 
@@ -975,6 +1126,12 @@ pub mod __private {
     impl<'de, 'a, 'input> de::Deserializer<'de> for SeqDeserializer<'a, 'input> {
         type Error = Error;
 
+        serde::forward_to_deserialize_any! {
+            bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
+            byte_buf option unit unit_struct newtype_struct tuple tuple_struct
+            map struct enum identifier ignored_any
+        }
+
         fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
         where
             V: Visitor<'de>,
@@ -988,12 +1145,6 @@ pub mod __private {
         {
             visitor.visit_seq(SeqAccess { nodes: self.nodes, index: 0 })
         }
-
-        serde::forward_to_deserialize_any! {
-            bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes
-            byte_buf option unit unit_struct newtype_struct tuple tuple_struct
-            map struct enum identifier ignored_any
-        }
     }
 
     struct SeqAccess<'a, 'input> {
@@ -1004,7 +1155,10 @@ pub mod __private {
     impl<'de, 'a, 'input> de::SeqAccess<'de> for SeqAccess<'a, 'input> {
         type Error = Error;
 
-        fn next_element_seed<T>(&mut self, seed: T) -> Result<Option<T::Value>, Self::Error>
+        fn next_element_seed<T>(
+            &mut self,
+            seed: T,
+        ) -> Result<Option<T::Value>, Self::Error>
         where
             T: de::DeserializeSeed<'de>,
         {
@@ -1020,7 +1174,8 @@ pub mod __private {
         }
     }
 
-    // Helper function for deserializing from a node with a custom struct descriptor
+    // Helper function for deserializing from a node with a custom struct
+    // descriptor
     pub fn deserialize_struct_from_node<'de, 'a, 'input, T, F>(
         node: Node<'a, 'input>,
         descriptor: &'static StructDescriptor,
@@ -1029,10 +1184,7 @@ pub mod __private {
     where
         F: FnOnce(StructFieldDeserializer<'a, 'input>) -> Result<T, Error>,
     {
-        let deser = StructFieldDeserializer {
-            node,
-            descriptor,
-        };
+        let deser = StructFieldDeserializer { node, descriptor };
         field_deserializer(deser)
     }
 }
