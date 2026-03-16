@@ -1,6 +1,3 @@
-[package]
-name = "serde-xpath"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
+[workspace]
+members = ["serde_xml", "serde_xml_derive"]
+resolver = "2"
