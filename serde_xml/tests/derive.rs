@@ -67,7 +67,6 @@ fn test_derive() {
         TestStruct {
             name: "SIGNAL_NAME".to_string(),
             id: "SIGNAL_ID".to_string(),
-            size: 20usize,
             properties: vec![
                 Property {
                     refid: "PROP1_REFID".to_string(),
