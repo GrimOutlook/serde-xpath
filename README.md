@@ -8,7 +8,7 @@ This crate allows you to deserialize XML documents into Rust structs using XPath
 > 🤖 **AI SLOP AHEAD**
 >
 > This entire crate was create by Claude. All I did was feed it the integration
-> test that now resides in serde_xpath/tests/derive.rs and told it to make a
+> test that now resides in `serde_xpath/tests/derive.rs` and told it to make a
 > crate that supports that format. Minimal human edits have been made since
 > that point so the code is likely quite unmaintainable. I just needed a small
 > crate to make an assignment at work easier and figured this was the easiest
