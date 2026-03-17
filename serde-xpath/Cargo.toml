@@ -1,0 +1,12 @@
+[package]
+name = "serde-xpath"
+version = "0.1.0"
+edition = "2024"
+description = "Build serde XPATH bindings for structs"
+license = "MIT"
+
+[dependencies]
+roxmltree = "0.21"
+serde = "1.0"
+serde-xpath-derive = { path = "../serde-xpath-derive/", version = "0.1.0" }
+thiserror = "2.0"
